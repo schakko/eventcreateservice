@@ -1,0 +1,48 @@
+eventcreateservice.php - SOAP service for Windows Event log
+
+eventcreateservice.php (ECS) is a  simple SOAP service which uses eventcreatef.exe by Florian Weinert 
+(http://prunkster.ecw.de/2010/04/12/eventcreatef-exe-eine-erganzung-zu-eventcreate-exe/).
+Every incoming SOAP message will be passed through to eventcreatef.exe which will write the log 
+message to a Windows 2003/XP event log. With ECS and eventcreatef.exe you can log any event to a an 
+eventlog of central Windows machine without Syslogd running.
+
+Workflow
+=======
+Unix/Linux system (log_over_soap.sh)
+OR SOAP-enabled client
+	--calls over SOAP--> Windows system (eventcreateservice.php) 
+		--pass through to eventcreatef.exe--> Windows system (central event log)
+
+Installation
+=======
+Just copy eventcreateservice.php and config.php to a Webserver enabled directory of your choice (htdocs / Inetpub). 
+This webserver __MUST__ run under a Windows operating system.
+You have to install Zend Framework 1.10.5 or later, because ECS uses of Zend_Soap_* classes.
+
+Change the settings in config.php for your needs.
+Try fetching the WSDL: http://<yourserver>/<yourpath>/eventcreateservice.php?wsdl
+
+Usage
+=======
+ * eventcreateservice.php?wsdl will show the WSDL file for SOAP enabled clients
+ * eventcreateservice.php?bash will download a Bash script named log_over_soap.sh
+
+
+log_over_soap.sh:
+=======
+log_over_soap.sh is a small Bash script which uses of CURL for making SOAP requests __without__ any other dependencies.
+The script is ready-to-use. Every parameter will be generated dynamically before you start the download of the file.
+
+log_over_soap.sh: Installation
+=======
+wget http://<yourserver>/<yourpath>/eventcreateservice.php?bash log_over_soap.sh
+chmod +x log_over_soap.sh
+
+log_over_soap.sh: Usage
+=======
+log_over_soap.sh <text:string> <logname:string> <severity:enum[ERROR|WARNING|INFORMATION|SUCCESS]> <source:string> <id:id>
+
+
+Note
+=======
+The use of this software is at the user's own risk.
